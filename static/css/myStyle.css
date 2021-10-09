@@ -1,0 +1,103 @@
+
+/* @keyframes rotate {from {transform: rotate(0deg);}
+    to {transform: rotateY(360deg);}}
+@-webkit-keyframes rotate {from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}}
+.navbar-brand img{
+    -webkit-animation: 3s rotate linear infinite;
+    animation: 6s rotate linear infinite;
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+} */
+.inventario{
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+}
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+main {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100vh;
+  height: -webkit-fill-available;
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.b-example-divider {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, .1);
+  border: solid rgba(0, 0, 0, .15);
+  border-width: 1px 0;
+  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+main li{
+  font-size: 20px;
+}
+
+main li:hover{
+  background-color: rgb(13, 110, 253,0.5);
+  border-radius: 1%;
+  font-size: 23px;
+  transition: 0.5s;
+}
+
+.active{
+  background-color: rgb(13, 110, 253);
+  box-shadow: 1px 1px 10px 1px #FFFCFA;
+}
+
+.row-producto img{
+  height: 77vh;
+}
+
+.row-provider label{
+  font-weight: bold;
+}
+
+.carousel-login img{
+  height: 100vh;
+}
+
+.data-login{
+ margin: auto;
+}
+
+.logo-bmw{
+  width: 200px;
+  height: 200px;
+  margin:auto;
+}
+
+.logo-bmw img{
+  width: 100%;
+  height: auto;
+}
+
+.table-productos img{
+  width: 45px;
+  height: 45px;
+}
+
+.modal-content{
+  width:100% ! important;
+  position:  absolute ! important;
+  }
+.mostrar{
+  display:  list-item ! important;
+  opacity:  1 ! important;
+  position:  absolute ! important;
+  background-color: #3c29297a !important;
+}

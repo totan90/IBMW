@@ -1,0 +1,17 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+    <h1>Here Mayra</h1>
+{% endblock %}
+
+{% block finalScript %}
+    <script>
+        let btns = document.querySelectorAll(".buttons");
+        btns.forEach(li => {
+            li.addEventListener('click', function() {
+                btns.forEach(btn => btn.classList.remove('active'));
+            });
+        });
+        btns[1].classList.add('active');
+    </script>
+{% endblock %}

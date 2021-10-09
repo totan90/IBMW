@@ -1,0 +1,15 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+    <h1>Here Lupe</h1>
+{% endblock %}
+
+{% block finalScript %}
+    <script>
+        let btns = document.querySelectorAll(".buttons");
+        btns.forEach(btn => {
+            btn => btn.classList.remove('active');
+        });
+        btns[3].classList.add('active');
+    </script>
+{% endblock %}
