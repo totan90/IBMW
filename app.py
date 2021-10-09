@@ -24,13 +24,5 @@ def productos():
 def proveedores():
     return render_template('contents/proveedores.html')
 
-@app.route('/jonathan')
-def jonathan():
-    return render_template('contents/jonathan.html')
-
-@app.route('/producto')
-def producto():
-    return render_template('contents/producto.html')
-
 if __name__ == '__main__':
     app.run(port=8080, debug=True)
