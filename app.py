@@ -16,13 +16,49 @@ def home():
 def usuarios():
     return render_template('contents/usuarios.html')
 
-@app.route('/productos')
+@app.route('/productos',methods=["GET"])
 def productos():
-    return render_template('contents/productos.html')
+    return render_template('contents/producto.html')
 
-@app.route('/proveedores')
+@app.route('/proveedores',methods=["GET"])
 def proveedores():
     return render_template('contents/proveedores.html')
+
+@app.route('/usuarios/crear',methods=["POST"])
+def crearUsuarios():
+    return "crear usuario"
+
+@app.route('/productos/crear',methods=["POST"])
+def crearProductos():
+    return "crear producto"
+
+@app.route('/proveedores/crear',methods=["POST"])
+def crearProveedores():
+   return "crear proveedor"
+
+@app.route('/usuarios/actualizar',methods=["PUT"])
+def actualizarUsuarios():
+    return "actualizar usuario"
+
+@app.route('/productos/actualizar',methods=["PUT"])
+def actualizarProductos():
+    return "actualizar producto"
+
+@app.route('/proveedores/actualizar',methods=["PUT"])
+def actualizarProveedores():
+   return "actualizar proveedor"
+
+@app.route('/usuarios/eliminar',methods=["DELETE"])
+def eliminarUsuarios():
+    return "eliminar usuario"
+
+@app.route('/productos/eliminar',methods=["DELETE"])
+def eliminarProductos():
+    return "eliminar producto"
+
+@app.route('/proveedores/eliminar',methods=["DELETE"])
+def eliminarProveedores():
+   return "eliminar proveedor"
 
 if __name__ == '__main__':
     app.run(port=8080, debug=True)
