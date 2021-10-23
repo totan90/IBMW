@@ -52,20 +52,42 @@
                 <div class="logo-bmw mb-3">
                     <img class="" src="{{ url_for('static', filename='img/logo.png') }}" alt="">
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-user-tie p-2"></i>Usuario</span>
-                    <input type="text" class="form-control" placeholder="Nombre de usuario" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-key p-2"></i>Contraseña</span>
-                    <input type="text" class="form-control" placeholder="************" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('home') }}" class="btn btn-primary">Ingresar</a>
-                </div>
+                <form method="POST" action="{{ url_for('home') }}">
+                  <div class="input-group mb-3">
+                    {{ form.username.label() }}
+                    {{ form.username(class="form-control",minlength=5, maxlength=12) }}
+                  </div>
+                  <div class="alert alert-danger form-control-sm ocultar" id="usernameError" role="alert">
+                    <i class="fas fa-times"></i> Usuario incorrecto, no debe contener espacios ni caracteres especiales
+                  </div>
+                  <div class="input-group mb-3">
+                    {{ form.password.label() }}
+                    {{ form.password(class="form-control") }}
+                  </div>
+                  <div class="d-grid gap-2">
+                    {{ form.ingresar(class="btn btn-primary") }}
+                  </div>
+                  <div class="alert alert-danger form-control-sm ocultar" id="usernameError" role="alert">
+                    {{ msg }}
+                  </div>
+                </form>
             </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/myJs.js') }}"></script>
+    <script>
+      document.getElementById('username').addEventListener('blur', ()=>{
+          var cadena = document.getElementById('username').value;
+          var expresion = /^[A-Za-z0-9]+$/g; //con espacio ---> /^[A-Za-z0-9\s]+$/g
+          var result = expresion.test(cadena);
+          if(!result){
+              document.getElementById('usernameError').classList.remove('ocultar');
+          }
+      })
+      document.getElementById('username').addEventListener('focus', ()=>{
+          document.getElementById('usernameError').classList.add('ocultar');
+      })
+    </script>
 </body>
 </html>
