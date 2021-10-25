@@ -75,7 +75,11 @@
     <hr class="mt-2 mb-3">
     <div class="text-end mb-4">
         <a href="/usuarios" class="btn btn-danger">Cerrar</a>
-        <a href="/usuarios/delete/{{datos[0][0]}}" class="btn btn-danger">Desactivar Usuario</a>
+        {% if datos[0][11] == 'si'%}
+        <a href="/usuarios/delete/{{datos[0][0]}}" class="btn btn-success shadow">Activar Usuario</a>
+        {% else %}
+        <a href="/usuarios/delete/{{datos[0][0]}}" class="btn btn-warning shadow">Desactivar Usuario</a>
+        {% endif %}
     </div>
    </form>
        

@@ -48,40 +48,25 @@
                     <tr class="table-dark">
                         <th scope="col">Producto</th>
                         <th scope="col">Nombre Producto</th>
-                        <th scope="col">Mínimo</th>
+                        <th scope="col">Cantidad Mínima</th>
                         <th scope="col">Cantidad Actual</th>
+                        <th scope="col">Diferencia</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for product in datos2 %}
                     <tr>
                         <th scope="row">
                             <div>
                                 <img src="{{ url_for('static', filename='img/motor.jpg') }}" alt="">
                             </div>
                         </th>
-                        <td>motor1</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <td>{{ product.0}}</td>
+                        <td>{{ product.1 }}</td>
+                        <td>{{ product.2 }}</td>
+                        <td>{{ product.3 }}</td>
                     </tr>
-                    <tr>
-                        <th scope="row">
-                            <div>
-                                <img src="{{ url_for('static', filename='img/motor2.jpg') }}" alt="">
-                            </div>
-                        </th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <div>
-                                <img src="{{ url_for('static', filename='img/motor3.jpg') }}" alt="">
-                            </div>
-                        </th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

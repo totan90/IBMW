@@ -34,12 +34,18 @@
                                     Inicio
                                     </a>
                                 </li>
+                                {% if 'rol' in session %}
+                                {% with rol = session['rol']%}
+                                {% if rol !=2 %}
                                 <li class="buttons">
                                     <a href="{{ url_for('usuarios') }}" class="nav-link text-white">
                                     <i class="fas fa-users"></i>
                                     Usuarios
                                     </a>
                                 </li>
+                                {% endif %}
+                                {% endwith %}
+                                {% endif %}
                                 <li class="buttons">
                                     <a href="{{ url_for('productos') }}" class="nav-link text-white">
                                     <i class="fas fa-user-tie"></i>

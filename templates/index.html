@@ -67,9 +67,15 @@
                   <div class="d-grid gap-2">
                     {{ form.ingresar(class="btn btn-primary") }}
                   </div>
-                  <div class="alert alert-danger form-control-sm ocultar" id="usernameError" role="alert">
-                    {{ msg }}
-                  </div>
+                  {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-danger mt-md-3" role="alert">
+                      {{ message}}
+                    </div>
+                  {% endfor %}
+                  {% endif %}
+                  {% endwith %}
                 </form>
             </div>
         </div>

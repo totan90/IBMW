@@ -19,5 +19,5 @@ def consult_action(query,datos)->int:
             if respuesta!=0:
                 conection.commit()
     except Exception as ex:
-        respuesta = 0
+        respuesta = 1000
     return respuesta

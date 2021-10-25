@@ -307,7 +307,7 @@
                     if(response=='username free'){
                         document.getElementById('data-form').classList.add('ocultar')
                         document.getElementById('validar-form').classList.add('ocultar')
-                        // document.getElementById('crear').classList.remove('ocultar')
+                        document.getElementById('crear').classList.remove('ocultar')
                     }else{
                         document.getElementById('username-busy-form').classList.remove('ocultar')
                     }
@@ -316,15 +316,14 @@
         }
         function prueba(){
             event.preventDefault();
-
             if(errors['nombres']==0 && errors['apellidos']==0 && errors['numero_documento']==0 && 
                 errors['email']==0 && errors['celular']==0 && errors['username']==0 && errors['password']==0 && 
                 errors['confirm_password']==0 && formUser[0]['nombres'].value && formUser[0]['apellidos'].value && 
                 formUser[0]['numero_documento'].value && formUser[0]['email'].value && formUser[0]['celular'].value &&
                 formUser[0]['username'].value && formUser[0]['password'].value && formUser[0]['confirm_password'].value){
-                    document.getElementById('data-form').classList.add('ocultar')
-                    document.getElementById('validar-form').classList.add('ocultar')
-                    document.getElementById('crear').classList.remove('ocultar')
+                    
+                    validarUsername();
+                    
             }else{
                 document.getElementById('data-form').classList.remove('ocultar')
             }
