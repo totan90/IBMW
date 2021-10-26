@@ -36,7 +36,7 @@
                                 </li>
                                 {% if 'rol' in session %}
                                 {% with rol = session['rol']%}
-                                {% if rol !=2 %}
+                                {% if rol !=3 %}
                                 <li class="buttons">
                                     <a href="{{ url_for('usuarios') }}" class="nav-link text-white">
                                     <i class="fas fa-users"></i>
@@ -48,7 +48,7 @@
                                 {% endif %}
                                 <li class="buttons">
                                     <a href="{{ url_for('productos') }}" class="nav-link text-white">
-                                    <i class="fas fa-user-tie"></i>
+                                    <i class="fas fa-store"></i>
                                     Productos
                                     </a>
                                 </li>

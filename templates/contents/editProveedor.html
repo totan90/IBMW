@@ -1,0 +1,303 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+    <div class="row p-2">
+        <form method="POST" id="crear-proveedor"  action="/proveedores/actualizar/{{datos[0][0]}}" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="row text-start">
+                <div class="text-center mt-md-3">
+                    <h1>Editar Proveedor</h1>
+                </div>
+                <div class=" col-sm-12 p-2">
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message}}<strong><i class="fas fa-check-circle"></i></strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <hr class="mt-md-3 mb-md-4">
+                <div class="col-sm-12 col-md-6 mt-2">
+                    <div class="card border rounded" >
+                        <div class="card-body">
+                            <h4 class="card-title text-center">{{ form.logo.label() }}</h4>
+                            <div class="alert alert-danger form-control-sm mt-2 ocultar" id="logo-form" role="alert">
+                                <i class="fas fa-times"></i> Falta el logo del proveedor
+                            </div>
+                            {{ form.logo(class="form-control") }}
+                        </div>
+                        <img src="{{ url_for('static', filename=datos[0][9]) }}" id="img-log" class="card-img-top" alt="Logo Proveedor">
+                      </div>
+                </div>
+                <div class="col-sm-12 col-md-6 mt-2 ">
+                    {{ form.nombresProveedor.label() }}
+                    <input class="form-control" id="nombresProveedor" maxlength="30" minlength="5" name="nombresProveedor" required type="text" value="{{ datos[0][1] }}">
+                    <div class="alert alert-danger form-control-sm mt-2 ocultar" id="nombresProveedor-form" role="alert">
+                        <i class="fas fa-times"></i> El nombre, no debe caracteres especiales
+                    </div>
+                    <div class="mt-md-2">
+                        {{ form.tipo_documento.label() }}
+                        {{ form.tipo_documento() }}
+                    </div>
+                    <div class="mt-md-2">
+                        {{ form.numero_documento.label() }}
+                        <input class="form-control" id="numero_documento" maxlength="12" minlength="5" name="numero_documento" required type="text" value="{{ datos[0][3] }}">
+                        <div class="alert alert-danger form-control-sm mt-2 ocultar" id="num-documento-form" role="alert">
+                            <i class="fas fa-times"></i> Ingresa un número de cédula válido sin puntos ni espacios
+                        </div>
+                    </div>
+                    <div class="mt-md-2">
+                        {{ form.email.label() }}
+                        <input class="form-control" id="email" maxlength="20" minlength="5" name="email" required type="email" value="{{ datos[0][5] }}">
+                        <div class="alert alert-danger form-control-sm mt-2 ocultar" id="email-form" role="alert">
+                            <i class="fas fa-times"></i> Ingresa un email válido
+                        </div>
+                    </div>
+                    <div class="mt-md-2">
+                        {{ form.celular.label() }}
+                        <input class="form-control" id="celular" maxlength="20" minlength="5" name="celular" required type="text" value="{{ datos[0][4] }}">
+                        <div class="alert alert-danger form-control-sm mt-2 ocultar" id="celular-form" role="alert">
+                            <i class="fas fa-times"></i> Ingresa un celular válido
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        {{ form.direccion.label() }}
+                        <input class="form-control" id="direccion" maxlength="50" minlength="5" name="direccion" required type="text" value="{{ datos[0][6] }}">
+                    </div>
+                </div>
+                <hr class="mt-md-4">
+                <div class="col-sm-12 col-md-12 mt-2">
+                    {{ form.autorizacion.label() }}
+                    {{ form.autorizacion() }}
+                </div>
+                <div class="col-sm-12 alert alert-danger form-control-sm mt-2 ocultar" id="data-form" role="alert">
+                    <i class="fas fa-times"></i> Faltan campos por llenar correctamente.
+                </div>
+            </div>
+            <hr>
+            <hr class="mt-2 mb-3">
+            <div class="text-end mb-4">
+                <a href="/proveedores" class="btn btn-danger">Cancelar</a>
+                <a  class="btn btn-primary" id="validar-form" onclick="prueba()">Validar registro</a>
+                {{ form.crear(class="btn btn-success ocultar") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block finalScript %}
+    <script>
+        let formProveedor =  document.querySelectorAll("#crear-proveedor");
+        let errors = {
+            nombresProveedor : 0,
+            numero_documento:0,
+            email : 0,
+            celular : 0,
+            logo : ''
+        };
+     
+        function validatioForm(valor,data){
+            switch (valor) {
+                case 1:
+                    var cadena = formProveedor[0][data[0]].value;
+                    var expresion = /^[A-Za-z0-9\s]+$/g; //con espacio ---> /^[A-Za-z0-9\s]+$/g
+                    var result = expresion.test(cadena);
+                    if(!result){
+                        if(data[0]=='nombresProveedor'){
+                            document.getElementById(data[1]).classList.remove('ocultar');
+                            if(errors['nombresProveedor']==0){
+                                errors['nombresProveedor']= 1;
+                            }
+                        }else{
+                            document.getElementById(data[1]).classList.remove('ocultar');
+                            if(errors['apellidos']==0){
+                                errors['apellidos']= 1;
+                            }
+                        }
+                    }else{
+                        if(data[0]=='nombresProveedor'){
+                            document.getElementById(data[1]).classList.add('ocultar');
+                            if(errors['nombresProveedor']==1){
+                                errors['nombresProveedor']= 0;
+                            }
+                        }else{
+                            document.getElementById(data[1]).classList.add('ocultar');
+                            if(errors['apellidos']==1){
+                                errors['apellidos']= 0;
+                            }
+                        }
+                    }
+                    break;
+
+                case 2:
+                    var cadena = formProveedor[0][data[0]].value;
+                    var expresion = /^\d*$/; //con espacio ---> /^[A-Za-z0-9\s]+$/g
+                    var result = expresion.test(cadena);
+                    if(!result){
+                        document.getElementById(data[1]).classList.remove('ocultar');
+                        if(errors['numero_documento']==0){
+                            errors['numero_documento']= 1;
+                        }
+                    }else{
+                        document.getElementById(data[1]).classList.add('ocultar');
+                        if(errors['numero_documento']==1){
+                            errors['numero_documento']= 0;
+                        }
+                    }
+                    break;
+
+                case 3:
+                    var cadena = formProveedor[0][data[0]].value;
+                    var expresion = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/; //con espacio ---> /^[A-Za-z0-9\s]+$/g
+                    var result = expresion.test(cadena);
+                    if(!result){
+                        document.getElementById(data[1]).classList.remove('ocultar');
+                        if(errors['email']==0){
+                            errors['email']= 1;
+                        }
+                    }else{
+                        document.getElementById(data[1]).classList.add('ocultar');
+                        if(errors['email']==1){
+                            errors['email']= 0;
+                        }
+                    }
+                    break;
+
+                case 4:
+                    var cadena = formProveedor[0][data[0]].value;
+                    var expresion =/^[\(]?[\+]?(\d{2}|\d{3})[\)]?[\s]?((\d{6}|\d{8})|(\d{3}[\*\.\-\s]){2}\d{3}|(\d{2}[\*\.\-\s]){3}\d{2}|(\d{4}[\*\.\-\s]){1}\d{4})|\d{8}|\d{10}|\d{12}$/;
+                    var result = expresion.test(cadena);
+                    if(!result){
+                        document.getElementById(data[1]).classList.remove('ocultar');
+                        if(errors['celular']==0){
+                            errors['celular']= 1;
+                        }
+                    }else{
+                        document.getElementById(data[1]).classList.add('ocultar');
+                        if(errors['celular']==1){
+                            errors['celular']= 0;
+                        }
+                    }
+                    break;
+                
+                case 5:
+                    var cadena = formProveedor[0][data[0]].value;
+                    var expresion =/^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+                    var result = expresion.test(cadena);
+                    if(!result){
+                        document.getElementById(data[1]).classList.remove('ocultar');
+                        if(errors['username']==0){
+                            errors['username']= 1;
+                        }
+                    }else{
+                        document.getElementById(data[1]).classList.add('ocultar');
+                        if(errors['username']==1){
+                            errors['username']= 0;
+                        }
+                    }
+                    break;
+
+                case 6:
+                    var cadena = formProveedor[0][data[0]].value;
+                    var expresion =/^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$/;
+                    var result = expresion.test(cadena);
+                    if(data[2]==1){
+                        if(!result){
+                        document.getElementById(data[1]).classList.remove('ocultar');
+                        if(errors['password']==0){
+                            errors['password']= 1;
+                        }
+                        }else{
+                            document.getElementById(data[1]).classList.add('ocultar');
+                            if(errors['password']==1){
+                            errors['password']= 0;
+                        }
+                        }
+                    }else{
+                        var passwor = formProveedor[0]['password'].value;
+                        var confirm_passwor = formProveedor[0]['confirm_password'].value;
+                        if(passwor != confirm_passwor){
+                            document.getElementById(data[1]).classList.remove('ocultar');
+                            if(errors['confirm_password']==0){
+                            errors['confirm_password']= 1;
+                        }
+                        }else{
+                            document.getElementById(data[1]).classList.add('ocultar');
+                            if(errors['confirm_password']==1){
+                            errors['confirm_password']= 0;
+                        }
+                        }
+                    }
+                    break;
+
+                case 7:
+                    var logo = formProveedor[0][data[0]].value;
+                    if(!logo){
+                        document.getElementById(data[1]).classList.remove('ocultar');
+                        if(errors['logo']==0){
+                            errors['logo']= 1;
+                        }
+                    }else{
+                        document.getElementById(data[1]).classList.add('ocultar');
+                        if(errors['logo']==1){
+                            errors['logo']= 0;
+                        }
+                    }
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+        // validacion del formulario para la creacion de usuarios
+       
+        formProveedor[0]['nombresProveedor'].addEventListener('blur', ()=>{
+            validatioForm(1,data=['nombresProveedor','nombresProveedor-form']);
+        });
+
+        formProveedor[0]['numero_documento'].addEventListener('blur', ()=>{
+            validatioForm(2,data=['numero_documento','num-documento-form']);
+        });
+
+        formProveedor[0]['email'].addEventListener('blur', ()=>{
+            validatioForm(3,data=['email','email-form']);
+        });
+
+        formProveedor[0]['celular'].addEventListener('blur', ()=>{
+            validatioForm(4,data=['celular','celular-form']);
+        });
+
+        formProveedor[0]['logo'].addEventListener('blur', ()=>{
+            validatioForm(7,data=['logo','logo-form']);
+        });
+
+        formProveedor[0]['logo'].addEventListener('change', (e)=>{
+            let reader = new FileReader();
+            reader.readAsDataURL(e.target.files[0]);
+            reader.onload = function(){
+                let img = reader.result;
+                formProveedor[0]['img-log'].setAttribute("src", img);
+            }
+        });
+
+        function prueba(){
+            event.preventDefault();
+            if(errors['nombresProveedor']==0 && errors['numero_documento']==0 && errors['email']==0 && errors['celular']==0 
+                && formProveedor[0]['nombresProveedor'].value &&  formProveedor[0]['numero_documento'].value && formProveedor[0]['email'].value && formProveedor[0]['celular'].value) {
+                    
+                    document.getElementById('data-form').classList.add('ocultar')
+                    document.getElementById('validar-form').classList.add('ocultar')
+                    document.getElementById('crear').classList.remove('ocultar')
+                    
+            }else{
+                document.getElementById('data-form').classList.remove('ocultar')
+            }
+
+        };
+       
+    </script>
+{% endblock %}

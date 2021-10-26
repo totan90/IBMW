@@ -1,0 +1,51 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+    <div class="row row-provider">
+        <div class="text-center mt-md-3">
+            <h1>Información del Proveedor</h1>
+        </div>
+        <hr>
+        <div class="col-sm-12 col-md-6 p-3">
+            <img class="img-thumbnail border shadow-lg" src="{{ url_for('static', filename=datos[0][9]) }}" alt="BMW"/>
+        </div>
+        <div class="col-sm-12 col-md-6 mt-md-5 mt-sm-2">
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-primary text-white">Nombre del proveedor :</span>
+                <label class="form-control">{{ datos[0][1] }}</label>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-primary text-white">Dirección : </span>
+                <label class="form-control">{{ datos[0][6] }}</label>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-primary text-white">Celular : </span>
+                <label class="form-control">{{ datos[0][4] }}</label>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-primary text-white">{{ datos[0][2] }} : </span>
+                <label class="form-control">{{ datos[0][3] }}</label>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-primary text-white">E-mail : </span>
+                <label class="form-control">{{ datos[0][5] }}</label>
+            </div>
+        </div>
+    </div>
+    <div>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-9"></div>
+        <div class="col-sm-12 col-md-3">
+            <span class="float-end">
+                <a href="/proveedores" class="btn btn-danger">Cerrar</a>
+                <a href="/proveedores" class="btn btn-primary">Ver Productos</a>
+            </span>
+        </div>
+    </div>
+    <div>
+        <hr>
+    </div>
+       
+{% endblock %}

@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, validators, SubmitField, SelectField, RadioField
+from wtforms import TextField, PasswordField, validators, SubmitField, SelectField, RadioField, FileField, FloatField, TextAreaField
 from markupsafe import Markup
-from wtforms.validators import InputRequired , Regexp
+from wtforms.validators import InputRequired , Regexp 
 from wtforms.fields.html5 import EmailField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 class Login(FlaskForm):
     username_value = Markup('<span class="input-group-text" id="basic-addon1"><i class="fas fa-user-tie p-2"></i>Usuario</span>')
@@ -29,3 +30,15 @@ class FormPart(FlaskForm):
     autorizacion = RadioField('Autorizacion de Datos', choices=[('si','Autorizo el manejo y almacenamiento de datos personales')],default='si')
     crear = SubmitField('Crear Usuario')
     actualizar = SubmitField('Actualizar Usuario')
+
+    #proveedor
+    nombresProveedor = TextField('Nombre Proveedor',validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('/^[A-Za-z0-9\s]+$/g', flags=0, message='caracteres no permitidos')])
+    logo = FileField('Logo Proveedor', validators=[FileAllowed(['jpg', 'png'])])
+    #producto
+    nombresProducto = TextField('Nombre Producto',validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('/^[A-Za-z0-9\s]+$/g', flags=0, message='caracteres no permitidos')])
+    cantidadMinima = FloatField('Cantidad Mínima del producto',validators = [InputRequired(message='Campo obligatorio')])
+    cantidadDisponible = FloatField('Cantidad Disponible del producto',validators = [InputRequired(message='Campo obligatorio')])
+    descripcion = TextAreaField('Descripción del Producto')
+    img1 = FileField('Primera imagen del producto', validators=[FileAllowed(['jpg', 'png'])])
+    img2 = FileField('Segunda imagen del producto', validators=[FileAllowed(['jpg', 'png'])])
+    img3 = FileField('Tercera imagen del producto', validators=[FileAllowed(['jpg', 'png'])])

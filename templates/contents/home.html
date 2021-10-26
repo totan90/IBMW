@@ -5,7 +5,7 @@
         <h1>Alerta Productos Mínimo</h1>
     </div>
     <hr>
-    <div class="row mt-3 table-productos">
+    <div class="row mt-md-5 table-productos">
         <div class="col-sm-12 text-danger">
             <h3>Productos por debajo del mínimo</h3>
         </div>
@@ -34,6 +34,13 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div class=" col-sm-12 p-2">
+                {% if messageRes %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ messageRes}}<strong><i class="fas fa-check-circle"></i></strong>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
     <hr>
@@ -42,7 +49,6 @@
             <h3>Productos cerca del mínimo</h3>
         </div>
         <div class="col-sm-12">
-            
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="table-dark">
@@ -69,6 +75,13 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div class=" col-sm-12 p-2">
+                {% if messageRes2 %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ messageRes2 }}<strong><i class="fas fa-check-circle"></i></strong>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
