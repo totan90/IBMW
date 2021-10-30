@@ -1,6 +1,6 @@
 import sqlite3
 
-URL_DB = 'IBMW.db'
+URL_DB = 'ibmw.db'
 
 def consult_select(query)->list:
     try:
@@ -8,7 +8,7 @@ def consult_select(query)->list:
             cursor = conection.cursor()
             respuesta = cursor.execute(query).fetchall()
     except Exception as ex:
-        respuesta = None
+        respuesta = []
     return respuesta
 
 def consult_action(query,datos)->int:

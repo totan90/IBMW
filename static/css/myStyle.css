@@ -112,3 +112,10 @@ main li:hover{
   margin:auto;
   margin-top: 10px;
 }
+
+
+/* @media (min-width: 375px)and (max-width: 768px) {
+  .menu-movil{
+    display: none;
+  }
+} */

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, session, u
 from flask.helpers import flash, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.wrappers import response
+from wtforms.i18n import messages_path
 from formularios import FormPart, Login
 from markupsafe import escape
 from db import consult_action, consult_select
@@ -38,26 +39,31 @@ def home():
         res = consult_select(sql)
         #si el usuario existe traemos los datos para crear la sesion
         if len(res)!=0:
-            sql2 = f"SELECT password, nombresUsuario, userName, idROl FROM usuarios WHERE userName = '{user}'"
+            sql2 = f"SELECT password, nombresUsuario, userName, idROl ,activo FROM usuarios WHERE userName = '{user}'"
             res2 = consult_select(sql2)
             passw = res2[0][0]
+            activo = res2[0][4]
             confirmPassword = check_password_hash(passw,pwd)
-            if confirmPassword == True :
+            if confirmPassword == True and activo == 'si':
                 #si el usuario y la password son correctos creamos la session y lo enviamos al dashboard
                 session['name'] = res2[0][1]
                 session['userName'] = res2[0][2]
                 session['rol'] = res2[0][3]
-                sql = "SELECT * FROM productos INNER JOIN img ON productos.idImg = img.id WHERE cantidadDisponibleProducto < cantidadMinimaProducto"
+                sql = "SELECT * FROM productos INNER JOIN img ON productos.id = img.idProducto WHERE cantidadDisponibleProducto < cantidadMinimaProducto GROUP BY productos.id"
                 res = consult_select(sql)
-                sql2 = "SELECT NombreProducto,cantidadMinimaProducto,cantidadDisponibleProducto,(cantidadDisponibleProducto-cantidadMinimaProducto) AS total FROM productos INNER JOIN img ON productos.idImg = img.id WHERE cantidadDisponibleProducto > cantidadMinimaProducto AND total < 9"
+                sql2 = "SELECT img.nombreImg,productos.NombreProducto,productos.cantidadMinimaProducto,productos.cantidadDisponibleProducto,(productos.cantidadDisponibleProducto-productos.cantidadMinimaProducto) AS total FROM productos INNER JOIN img ON productos.id = img.idProducto  WHERE cantidadDisponibleProducto > cantidadMinimaProducto AND total < 9 GROUP BY productos.id"
                 res2 = consult_select(sql2)
-                if res!= None and res2!= None:
+                if len(res)!= 0 and len(res2)!= 0:
                     return render_template('contents/home.html',datos=res,datos2=res2)
+                elif len(res)!=0 :
+                    messageRes2 = "No existen productos cerca del mínimo "
+                    return render_template('contents/home.html',datos=res,messageRes2=messageRes2)
+                elif len(res2)!=0 :
+                    messageRes = "No existen productos cerca del mínimo "
+                    return render_template('contents/home.html',datos2=res2,messageRes=messageRes)
                 else :
-                    if res == None:
-                        messageRes = "No existen productos por debajo del mínimo "
-                    if res2 == None:
-                        messageRes2 = "No existen productos cerca del mínimo "
+                    messageRes = "No existen productos por debajo del mínimo "
+                    messageRes2 = "No existen productos cerca del mínimo "
                     return render_template('contents/home.html',messageRes=messageRes,messageRes2=messageRes2)
             else :
                 #si el usuario no existe lo redirigimos al login
@@ -69,17 +75,21 @@ def home():
             return redirect('/')
     else :
         if 'userName' and 'name' in session :
-            sql = "SELECT * FROM productos INNER JOIN img ON productos.idImg = img.id WHERE cantidadDisponibleProducto < cantidadMinimaProducto"
+            sql = "SELECT * FROM productos INNER JOIN img ON productos.id = img.idProducto WHERE cantidadDisponibleProducto < cantidadMinimaProducto GROUP BY productos.id"
             res = consult_select(sql)
-            sql2 = "SELECT nombreProducto,cantidadMinimaProducto,cantidadDisponibleProducto FROM productos INNER JOIN img ON productos.idImg = img.id"
+            sql2 = "SELECT img.nombreImg,productos.NombreProducto,productos.cantidadMinimaProducto,productos.cantidadDisponibleProducto,(productos.cantidadDisponibleProducto-productos.cantidadMinimaProducto) AS total FROM productos INNER JOIN img ON productos.id = img.idProducto  WHERE cantidadDisponibleProducto > cantidadMinimaProducto AND total < 9 GROUP BY productos.id"
             res2 = consult_select(sql2)
-            if res!= None and res2!= None:
+            if len(res)!= 0 and len(res2)!= 0:
                 return render_template('contents/home.html',datos=res,datos2=res2)
+            elif len(res)!=0 :
+                messageRes2 = "No existen productos cerca del mínimo "
+                return render_template('contents/home.html',datos=res,messageRes2=messageRes2)
+            elif len(res2)!=0 :
+                messageRes = "No existen productos cerca del mínimo "
+                return render_template('contents/home.html',datos2=res2,messageRes=messageRes)
             else :
-                if res == None:
-                    messageRes = "No existen productos por debajo del mínimo "
-                if res2 == None:
-                    messageRes2 = "No existen productos cerca del mínimo "
+                messageRes = "No existen productos por debajo del mínimo "
+                messageRes2 = "No existen productos cerca del mínimo "
                 return render_template('contents/home.html',messageRes=messageRes,messageRes2=messageRes2)
         else :
             return redirect(url_for('index'))
@@ -265,6 +275,9 @@ def proveedores():
         if len(res)!=0 :
             frm = FormPart()
             return render_template('contents/proveedores.html',form=frm, data=res)
+        else :
+            message = "No existen proveedores registrados "
+            return render_template('contents/proveedores.html',message = message)
     else :
         return redirect(url_for('index'))
 
@@ -411,20 +424,40 @@ def deleteProveedor(id):
     else :
         return redirect(url_for('index'))
 
+@app.route('/proveedores/producto/<id>',methods=["GET"])
+def productoOfproveedor(id):
+    if 'userName' and 'name' in session :
+        sql =  f"SELECT proveedores.id,productos.nombreProducto, productos.cantidadMinimaProducto,productos.cantidadDisponibleProducto ,proveedores.nombresProveedor FROM productos INNER JOIN productProveedor ON productos.id = productProveedor.idProducto INNER JOIN proveedores ON productProveedor.idProveedor = proveedores.id WHERE proveedores.id = {id} "
+        res = consult_select(sql)
+        if len(res)!=0 :
+            return render_template('contents/productosProveedor.html',datos=res)
+    else :
+        return redirect(url_for('index'))
 
 
 # URLS Productos
 
 @app.route('/productos',methods=["GET"])
 def productos():
-    return render_template('contents/productos.html')
-
+    if 'userName' and 'name' in session :
+        sql =  "SELECT * FROM productos"
+        res = consult_select(sql)
+        if len(res)!=0 :
+            frm = FormPart()
+            return render_template('contents/productos.html',form=frm, data=res)
+        else :
+            message = "No existen productos registrados "
+            return render_template('contents/productos.html',message = message)
+    else :
+        return redirect(url_for('index'))
 
 @app.route('/form/crear/producto/',methods=["GET"])
 def formProducto():
     if 'userName' and 'name' in session :
         frm = FormPart()
-        return render_template('contents/formProducto.html',form=frm)
+        sql =  "SELECT id, nombresProveedor FROM proveedores WHERE activo = 'si' "
+        res = consult_select(sql)
+        return render_template('contents/formProducto.html',form=frm,datos=res)
     else :
         return redirect(url_for('index'))
 
@@ -440,6 +473,22 @@ def crearProducto():
             logoSave = f"static/img/uploads/{nameImg}"
             img.save(logoSave)
 
+            return urlImg
+        
+        proveedores = escape(request.form.getlist('proveedores')).split(',')
+        ini = 6
+        end = 7
+        indice = len(proveedores)
+        def productProvider(indice,idProducto):
+            p = ''
+            i = 0
+            while indice > 0 :
+                p = proveedores[i]
+                proveedor_id = p[ini:end]
+                sql4 = "INSERT INTO productProveedor(idProveedor,idProducto) VALUES (?,?) "
+                res4 = consult_action(sql4,(proveedor_id,idProducto))
+                indice = indice - 1
+                i = i + 1
         #recuperacion de datos proveedor
         nombresProducto = escape(request.form['nombresProducto'].strip()).lower()
         descripcionProducto = escape(request.form['descripcion'].strip()).lower()
@@ -449,34 +498,196 @@ def crearProducto():
         imgProducto1 = frm.img1.data
         imgProducto2 = frm.img2.data
         imgProducto3 = frm.img3.data
+        urlImg1 = ''
+        urlImg2 = ''
+        urlImg3 = ''
+
         if imgProducto1 :
-            saveImgs(imgProducto1)
+            urlImg1 = saveImgs(imgProducto1)
         if imgProducto2 :
-            saveImgs(imgProducto2)
+            urlImg2 = saveImgs(imgProducto2)
         if imgProducto3 :
-            saveImgs(imgProducto3)
-        return redirect(url_for('productos'))
-        """
+            urlImg3 = saveImgs(imgProducto3)
+
         if nombresProducto  and cantidadMinima :
             #preparacion de sql
-            sql = "INSERT INTO Productoes(nombresProducto,tipoDocumento,numeroDocumento,celularProducto,emailProducto,direccionProducto,activo) VALUES (?,?,?,?,?,?,?) "
+            sql = "INSERT INTO productos(nombreProducto,descripcionProducto,cantidadMinimaProducto,cantidadDisponibleProducto,activo) VALUES (?,?,?,?,?) "
             #insertando los datos
-            res = consult_action(sql,(nombresProducto,descripcionProducto, cantidadMinima,celularProducto,emailProducto,direccionProducto,activo))
-            sql2 = "SELECT id FROM Productoes ORDER BY id DESC LIMIT 1"
+            res = consult_action(sql,(nombresProducto,descripcionProducto, cantidadMinima,cantidadDisponible,activo))
+            #inserto en productProveedor
+            sql2 = "SELECT id FROM productos ORDER BY id DESC LIMIT 1"
             res2 = consult_select(sql2)
-            Producto_id = res2[0][0]
-            producto_id = 0
-            sql3 = "INSERT INTO img(nombreImg,idProducto,idProductoes) VALUES (?,?,?) "
-            res3 = consult_action(sql3,(urlImg,producto_id, proveedor_id))
+            producto_id = res2[0][0]
+            productProvider(indice,producto_id)
+            
+            def registerImgBd(urlImg) :
+                #recupera el ultimo id guardado en productos
+                sql2 = "SELECT id FROM productos ORDER BY id DESC LIMIT 1"
+                res2 = consult_select(sql2)
+                producto_id = res2[0][0]
+                proveedor_id = 0
+                sql3 = "INSERT INTO img(nombreImg,idProducto,idProveedores) VALUES (?,?,?) "
+                res3 = consult_action(sql3,(urlImg,producto_id, proveedor_id))
 
-            if res!=0 and res2 != None and res3!=0:
-                flash('Proveedor registrado con éxito ')
+            if urlImg1 :
+                registerImgBd(urlImg1)
+
+            if urlImg2 :
+                registerImgBd(urlImg2)
+
+            if urlImg3 :
+                registerImgBd(urlImg3)
+
+            if res!=0:
+                flash('Producto registrado con éxito ')
             else : 
-                flash('Proveedor no registrado con éxito ')
-            return redirect(url_for('proveedores'))
+                flash('Producto no se registro con éxito ')
+            return redirect(url_for('productos'))
         else :
             flash('Fallo el registro faltaron campos por diligenciar')
-            return redirect(url_for('formProveedor')) """
+            return redirect(url_for('formProductos'))
+    else :
+        return redirect(url_for('index'))
+
+@app.route('/producto/view/<string:id>',methods=["POST","GET"])
+def buscarProducto(id):
+    if 'userName' and 'name' in session :
+        # sql =  "SELECT * FROM productos INNER JOIN img ON productos.id = img.idProducto"
+        sql =  f"SELECT * FROM productos INNER JOIN img ON productos.id = img.idProducto WHERE productos.id = '{id}'"
+        res = consult_select(sql)
+        sql2 =  f"SELECT proveedores.id, proveedores.nombresProveedor FROM proveedores INNER JOIN productProveedor ON proveedores.id = productProveedor.idProveedor INNER JOIN productos ON  productos.id = productProveedor.idProducto WHERE  productProveedor.idProducto = '{id}'"
+        res2 = consult_select(sql2)
+        if res2 != 0 :
+            return render_template('contents/viewProductos.html',datos=res,proveedores=res2);
+        else :
+            return render_template('contents/viewProductos.html',datos=res);
+    else :
+        return redirect(url_for('index'))
+
+@app.route('/producto/search/',methods=["GET","POST"])
+def searchProductos():
+    if 'userName' and 'name' in session :
+        atributo = escape(request.form['atributo'])
+        valor = escape(request.form['valor']).lower()
+        sql =  f'SELECT * FROM productos  WHERE {atributo} LIKE "%{valor}%"'
+        res = consult_select(sql)
+        if len(res)!= 0 :
+            return render_template('contents/productos.html', data=res)
+        else : 
+            return render_template('contents/productos.html', message='Sin resultados ')
+    else :
+        return redirect(url_for('index'))
+
+@app.route('/producto/edit/<string:id>',methods=["GET"])
+def productoEdit(id):
+    if 'userName' and 'name' in session :
+        sql =  f"SELECT * FROM productos INNER JOIN img ON productos.id = img.idProducto WHERE productos.id = '{id}'"
+        res = consult_select(sql)
+        frm = FormPart()
+        if len(res)!=0 :
+            return render_template('contents/editProducto.html',form=frm,datos=res)
+        else :
+            res = [()]
+            return render_template('contents/editProducto.html',form=frm, datos=res)
+    else :
+        return redirect(url_for('index'))
+
+@app.route('/producto/actualizar/<id>',methods=["POST"])
+def actualizarProducto(id):
+    if 'userName' and 'name' in session :
+        frm = FormPart()
+        sql = f"SELECT img.id AS idImg, nombreImg AS imagenes FROM productos INNER JOIN img ON productos.id = img.idProducto WHERE productos.id = '{id}';"
+        resImg = consult_select(sql)
+        #funcion para Guardar Imagenes en el Servidor
+        def saveImgs(img) :
+            nameImg = secure_filename(img.filename)
+            jinjaStart = "img/uploads/"
+            urlImg = jinjaStart+nameImg
+            logoSave = f"static/img/uploads/{nameImg}"
+            img.save(logoSave)
+
+            return urlImg
+        
+        # proveedores = escape(request.form.getlist('proveedores')).split(',')
+        # ini = 6
+        # end = 7
+        # indice = len(proveedores)
+        # def productProvider(indice,idProducto):
+            # p = ''
+            # i = 0
+            # while indice > 0 :
+            #     p = proveedores[i]
+            #     proveedor_id = p[ini:end]
+            #     sql4 = "INSERT INTO productProveedor(idProveedor,idProducto) VALUES (?,?) "
+            #     res4 = consult_action(sql4,(proveedor_id,idProducto))
+            #     indice = indice - 1
+            #     i = i + 1
+        #recuperacion de datos producto
+        nombresProducto = escape(request.form['nombresProducto'].strip()).lower()
+        descripcionProducto = escape(request.form['descripcion'].strip()).lower()
+        cantidadMinima = escape(request.form['cantidadMinima'].strip())
+        cantidadDisponible = escape(request.form['cantidadDisponible'].strip())
+        activo = 'si'
+        imgProducto1 = frm.img1.data
+        imgProducto2 = frm.img2.data
+        imgProducto3 = frm.img3.data
+        urlImg1 = ''
+        urlImg2 = ''
+        urlImg3 = ''
+
+        if imgProducto1 :
+            urlImg1 = saveImgs(imgProducto1)
+        if imgProducto2 :
+            urlImg2 = saveImgs(imgProducto2)
+        if imgProducto3 :
+            urlImg3 = saveImgs(imgProducto3)
+
+        if nombresProducto  and cantidadMinima :
+            #preparacion de sql
+            sql = f"UPDATE productos SET nombreProducto = ?, descripcionProducto = ?,cantidadMinimaProducto = ?,cantidadDisponibleProducto = ?,activo =? WHERE id = {id} "
+            #insertando los datos
+            res = consult_action(sql,(nombresProducto,descripcionProducto, cantidadMinima,cantidadDisponible,activo))
+            #inserto en productProveedor
+            def updateImgBd(urlImg,idImg) :
+                #actualizar las imagenes
+                idProducto = id
+                sql = f"UPDATE img SET nombreImg = ?, idProducto = ? WHERE idProducto = {id} AND id ={idImg}"
+                res3 = consult_action(sql,(urlImg,idProducto))
+
+            if urlImg1 :
+                updateImgBd(urlImg1,resImg[0][0])
+
+            if urlImg2 :
+                updateImgBd(urlImg2,resImg[1][0])
+
+            if urlImg3 :
+                updateImgBd(urlImg3,resImg[2][0])
+
+            if res!=0:
+                flash('Producto actualizado con éxito ')
+            else : 
+                flash('El Producto no se actualizó con éxito ')
+            return redirect(url_for('productos'))
+        else :
+            flash('Fallo el registro faltaron campos por diligenciar')
+            return redirect(url_for('formProductos'))
+    else :
+        return redirect(url_for('index'))
+
+@app.route('/producto/delete/<string:id>',methods=["GET","POST","PUT"])
+def deleteProducto(id):
+    if 'userName' and 'name' in session :
+        sql =  f"SELECT nombreProducto, activo FROM productos WHERE id = {id}"
+        res = consult_select(sql)
+        name = res[0][0]
+        if res[0][1] == 'si' :
+            activo = 'no'
+        else :
+            activo = 'si'
+
+        sql = f"UPDATE productos SET nombreProducto =?, activo =? WHERE id = {id} "
+        res = consult_action(sql,(name,activo))
+        return redirect(url_for('productos'))
     else :
         return redirect(url_for('index'))
 

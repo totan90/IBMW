@@ -17,20 +17,25 @@
         <div class="col-sm-7 col-md-6 col-lg-6">
             <h3><i class="fas fa-boxes"></i> Productos</h3>
         </div>
+        {% if 'rol' in session %}
+        {% with rol = session['rol']%}
+        {% if rol !=3 %}
         <div class="col-sm-5 col-md-6 col-lg-6 text-md-end">
             <a href="/form/crear/producto/" class="btn btn-primary">
                 <i class="fas fa-plus-circle"></i> Crear Producto
             </a>
         </div>
+        {% endif %}
+        {% endwith %}
+        {% endif %}
     </div>
     <hr>
     <!-- aqui row de buscar -->
-    <form action="/proveedores/search/" method="POST">
+    <form action="/producto/search/" method="POST">
         <div class="row mt-md-3">
             <div class="col-sm-12 col-md-4">
                 <select class="form-select" name="atributo">
-                    <option value = "nombresProveedor" selected>Nombre</option>
-                    <option value = "numeroDocumento">Documento</option>
+                    <option value = "nombreProducto" selected>Nombre</option>
                 </select>
             </div>
             <div class="col-sm-12 col-md-5">
@@ -42,35 +47,29 @@
         </div>
     </form>     
    
-    <!-- aqui esta la table de proveedors -->
+    <!-- aqui esta la table de productos -->
     <div class="row mt-md-4 p-2">
         <div class="col-sm-12 table-responsive">
             <table class="table table-bordered table-hover table-striped">
                 <thead>
-                    <tr class="table-dark">
-                        <th scope="col">Logo proveedor</th>
-                        <th scope="col">Nombre Proveedor</th>
-                        <th scope="col">Celular</th>
+                    <tr class="table-dark text-center">
+                        <th scope="col">Nombre Producto</th>
+                        <th scope="col">cantidad Disponible</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for  proveedor in data %}
+                    {% for  producto in data %}
                         <tr class="text-center">
+                            <td>{{ producto[1] }}</td>
+                            <td>{{ producto[4] }}</td>
                             <td>
-                                <div class="img-proveedores">
-                                    <img class="img-fluid img-thumbnail" src="{{ url_for('static', filename=proveedor[9]) }}" alt="">
-                                </div>
-                            </td>
-                            <td>{{ proveedor[1] }}</td>
-                            <td>{{ proveedor[4] }}</td>
-                            <td>
-                                <a href="/proveedores/view/{{proveedor[0]}}" title="ver" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-                                <a href="/proveedores/edit/{{proveedor[0]}}" title="editar" class="btn btn-warning"><i class="fas fa-pen"></i></a>
-                                {% if proveedor[7] == 'si' %}
-                                <a href="/proveedores/delete/{{proveedor[0]}}"class="btn btn-danger"><i class="fas fa-times-circle"></i> Desactivar</a>
+                                <a href="/producto/view/{{producto[0]}}" title="ver" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                                <a href="/producto/edit/{{producto[0]}}" title="editar" class="btn btn-warning"><i class="fas fa-pen"></i></a>
+                                {% if producto[5] == 'si' %}
+                                <a href="/producto/delete/{{producto[0]}}"class="btn btn-danger"><i class="fas fa-times-circle"></i> Desactivar</a>
                                 {% else %}
-                                <a href="/proveedores/delete/{{proveedor[0]}}"  class="btn btn-success"><i class="fas fa-check-circle"></i> Activar</a>
+                                <a href="/producto/delete/{{producto[0]}}"  class="btn btn-success"><i class="fas fa-check-circle"></i> Activar</a>
                                 {% endif %}
                                 
                                 
@@ -98,6 +97,12 @@
                 btns.forEach(btn => btn.classList.remove('active'));
             });
         });
-        btns[3].classList.add('active');
+        let count = btns.length;
+        if (count == 3){
+            btns[1].classList.add('active');
+
+        }else{
+            btns[2].classList.add('active');
+        }
     </script>
 {% endblock %}

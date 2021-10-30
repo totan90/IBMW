@@ -24,7 +24,7 @@
                     <tr>
                         <td>
                             <div>
-                                <img src="{{ url_for('static', filename='img/motor.jpg') }}" alt="">
+                                <img src="{{ url_for('static', filename=product.7) }}" alt="">
                             </div>
                         </td>
                         <td>{{ product.1}}</td>
@@ -64,13 +64,13 @@
                     <tr>
                         <th scope="row">
                             <div>
-                                <img src="{{ url_for('static', filename='img/motor.jpg') }}" alt="">
+                                <img src="{{ url_for('static', filename=product.0) }}" alt="">
                             </div>
                         </th>
-                        <td>{{ product.0}}</td>
-                        <td>{{ product.1 }}</td>
+                        <td>{{ product.1}}</td>
                         <td>{{ product.2 }}</td>
                         <td>{{ product.3 }}</td>
+                        <td>{{ product.4 }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

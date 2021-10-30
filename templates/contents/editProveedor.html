@@ -83,7 +83,7 @@
             <div class="text-end mb-4">
                 <a href="/proveedores" class="btn btn-danger">Cancelar</a>
                 <a  class="btn btn-primary" id="validar-form" onclick="prueba()">Validar registro</a>
-                {{ form.crear(class="btn btn-success ocultar") }}
+                {{ form.actualizarProveedor(class="btn btn-success ocultar") }}
             </div>
         </form>
     </div>
@@ -291,7 +291,7 @@
                     
                     document.getElementById('data-form').classList.add('ocultar')
                     document.getElementById('validar-form').classList.add('ocultar')
-                    document.getElementById('crear').classList.remove('ocultar')
+                    document.getElementById('actualizarProveedor').classList.remove('ocultar')
                     
             }else{
                 document.getElementById('data-form').classList.remove('ocultar')

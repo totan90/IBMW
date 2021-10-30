@@ -26,7 +26,7 @@ class FormPart(FlaskForm):
     username = TextField('Nombre de Usuario',validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('\w+', flags=0, message='caracteres no permitidos')])
     password = PasswordField('Contraseña', validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$', flags=0, message='caracteres no permitidos')])
     confirm_password = PasswordField('Confirmar Contraseña', validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$', flags=0, message='caracteres no permitidos')])
-    roles = SelectField('Asignar Rol', choices=[(1,'Administrador'), (2,'Super Administrador'),(3,'Usuario Final') ],default=3)
+    roles = SelectField('Asignar Rol', choices=[(1,'Super Administrador'), (2,'Administrador'),(3,'Usuario Final') ],default=3)
     autorizacion = RadioField('Autorizacion de Datos', choices=[('si','Autorizo el manejo y almacenamiento de datos personales')],default='si')
     crear = SubmitField('Crear Usuario')
     actualizar = SubmitField('Actualizar Usuario')
@@ -34,6 +34,7 @@ class FormPart(FlaskForm):
     #proveedor
     nombresProveedor = TextField('Nombre Proveedor',validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('/^[A-Za-z0-9\s]+$/g', flags=0, message='caracteres no permitidos')])
     logo = FileField('Logo Proveedor', validators=[FileAllowed(['jpg', 'png'])])
+    actualizarProveedor = SubmitField('Actualizar Proveedor')
     #producto
     nombresProducto = TextField('Nombre Producto',validators = [InputRequired(message='Campo obligatorio'),validators.Regexp('/^[A-Za-z0-9\s]+$/g', flags=0, message='caracteres no permitidos')])
     cantidadMinima = FloatField('Cantidad Mínima del producto',validators = [InputRequired(message='Campo obligatorio')])
@@ -42,3 +43,4 @@ class FormPart(FlaskForm):
     img1 = FileField('Primera imagen del producto', validators=[FileAllowed(['jpg', 'png'])])
     img2 = FileField('Segunda imagen del producto', validators=[FileAllowed(['jpg', 'png'])])
     img3 = FileField('Tercera imagen del producto', validators=[FileAllowed(['jpg', 'png'])])
+    actualizarProducto = SubmitField('Actualizar Producto')
